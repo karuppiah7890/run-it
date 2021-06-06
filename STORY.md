@@ -113,3 +113,23 @@ API will have this one endpoint to list out the runtimes / environments it has -
 In short, some of the things to do are - Save code, Build code, Run code :)
 
 Also, for any restrictions, for example - initially not running multiple builds at the same time - I need to add restrictions at API server level and not just UI level :) As someone can do a API call if UI blocks things and that can't be allowed!
+
+---
+
+New Feature! Idea! Sometimes people want to use environment variables, we can provide a separate place to store the environment variables ;)
+
+---
+
+New Feature! Idea! People cannot build all kinds of code in this environment. For example, sometimes some code has references to private repo code. For example, in golang, one can refer to private repos in `import` statements. In such cases, people need access to those git repos in their local to make it work. In this code environment, that's not possible! As the code environment will not have credentials or extra access to pull the private code, also that's too much work, depending on the kind of language and module system etc. So, we can provide a FAQ about what's possible and what's not possible. Especially what's not possible. The admin can provide an FAQ for each runtime or for all runtimes in general in the form of a JSON - array of objects containing `question` and `answer` fields which the front end can pull from the API server and can render when the user wants to see FAQ for the specific runtime or for all runtimes in general. It can be merged together by the UI and shown to the user actually
+
+---
+
+New Feature! Idea! About resources - we need to ensure that the source code is not too big, for now at least. For which we can check size, or do something else too. For example, we can store the source code in platform specific storage - for Docker, maybe Docker volumes? For Kubernetes, PV? The storage can be user specific - containing multiple projects, or project specific where one project has one storage. Later when users share code, it will be easy to have one storage for one project, like one Docker volume for one project.
+
+---
+
+New Feature! Idea! Users can fork code from other users
+
+---
+
+New Feature! Idea! Users can make their code public or private ;) Public code can be seen by other users through some gallery view maybe? :D
