@@ -183,3 +183,136 @@ Try running it in a Docker container using Docker CLI
 Try running it in a Docker container using OCI tools and CLI
 
 Try running it in a Docker container using OCI using Golang code and libraries
+
+---
+
+Some decisions - I plan to use Golang to write the code for the platform. Let's see how that goes :)
+
+I plan to use some data store for storage. It might a bit complex like PostgreSQL or something a bit simple like Redis, etcd. I know only these stores in general. I gotta think about what kind of data I want to store and then think about what Database to use
+
+---
+
+Running with golang Docker image from Docker Hub
+
+https://hub.docker.com/_/golang
+
+```bash
+$ docker run --rm -v experiments/golang-and-docker/main.go:/app/main.go  golang:1.16.5 go run /app/main.goUnable to find image 'golang:1.16.5' locally
+1.16.5: Pulling from library/golang
+d960726af2be: Already exists 
+e8d62473a22d: Already exists 
+8962bc0fad55: Already exists 
+65d943ee54c1: Already exists 
+f2253e6fbefa: Already exists 
+186c77a2a533: Pull complete 
+db807893dccf: Pull complete 
+Digest: sha256:360bc82ac2b24e9ab6e5867eebac780920b92175bb2e9e1952dce15571699baa
+Status: Downloaded newer image for golang:1.16.5
+docker: Error response from daemon: create experiments/golang-and-docker/main.go: "experiments/golang-and-docker/main.go" includes invalid characters for a local volume name, only "[a-zA-Z0-9][a-zA-Z0-9_.-]" are allowed. If you intended to pass a host directory, use absolute path.
+See 'docker run --help'.
+```
+
+Oops, syntax issues, haha. It thought the input was a Docker volume name, but it's actually a local file in a local directory, let's fix that!
+
+```bash
+$ docker run --rm -v $(pwd)/experiments/golang-and-docker/main.go:/app/main.go  golang:1.16.5 go run /app/main.go
+Hello world! :D
+
+$ go run experiments/golang-and-docker/main.go 
+Hello world! :D
+```
+
+Woohoo! :D Simple thing, done! :)
+
+Now, let's try some CRI tools. Oops, actually OCI tools. Or, OCI CRI I guess :P
+
+Let's learn!
+
+https://opencontainers.org/
+
+https://opencontainers.org/about/overview/
+
+https://github.com/opencontainers
+
+https://github.com/opencontainers/runc
+
+https://github.com/opencontainers/image-tools
+
+https://github.com/opencontainers/runtime-tools
+
+Let's try out runc and see if it helps in interacting with Docker runtime
+
+https://github.com/opencontainers/runc/releases
+
+I'm forgetting that containers usually need the OS features to do containerization - isolation of processes, or running isolated processes. chroot, namespaces, cgroups. Linux has it and I think other OSes are trying to bring those features, but I don't know much. I remember some mention of newer versions of Windows Server bringing support for containerization features similar to virtualization
+
+A mention in runc README
+
+https://github.com/opencontainers/runc
+
+```
+runc currently supports the Linux platform with various architecture support. It must be built with Go version 1.13 or higher.
+
+In order to enable seccomp support you will need to install libseccomp on your platform.
+```
+
+In my case, my machine is Mac. Hmm. I'm wondering how I can run runc and connect runc with the Docker engine running inside some Linux VM inside my Mac. I first need a mac based runc. Hmm. And I don't think I can build that - if there's OS specific code in it, for example Linux specific. Hmm. I guess I gotta try. Or, I could just first write code with Docker client and then check more about this. Or, I could check if there are OCI client libraries to interact with multiple container runtimes the same way!! :) :D
+
+I was looking for more docs
+
+https://github.com/opencontainers/runc/tree/master/docs
+
+https://github.com/opencontainers/runtime-tools/tree/master/docs
+
+https://github.com/opencontainers/runtime-tools/blob/master/docs/command-line-interface.md
+
+I was also looking for client libraries
+
+https://github.com/search?utf8=%E2%9C%93&q=oci%20client%20golang%20library
+
+https://github.com/search?q=oci+client+library
+
+https://github.com/search?q=oci+client
+
+I guess oci runtime code is more for container runtimes to use, but looks like I can't use the oci runtime code to interact with container runtimes in a polymorphic manner
+
+Here's again a doc in runc README
+
+```
+Please note that runc is a low level tool not designed with an end user in mind. It is mostly employed by other higher level container software.
+
+Therefore, unless there is some specific use case that prevents the use of tools like Docker or Podman, it is not recommended to use runc directly.
+
+If you still want to use runc, here's how.
+```
+
+So, for now I'll just look for clients to be able to run a Docker client as a golang library
+
+https://github.com/search?q=docker+client
+
+https://github.com/search?l=Go&q=docker+client&type=Repositories
+
+https://github.com/fsouza/go-dockerclient
+
+https://github.com/docker/engine-api
+
+https://github.com/docker/docker/tree/master/client
+
+https://github.com/moby/moby/tree/master/client
+
+I was wondering which one to use. 
+
+https://github.com/fsouza/go-dockerclient or official one
+
+I see this -
+
+https://github.com/fsouza/go-dockerclient#difference-between-go-dockerclient-and-the-official-sdk
+
+```
+For new projects, using the official SDK is probably more appropriate as go-dockerclient lags behind the official SDK. 
+
+
+When using the official SDK, keep in mind that because of how the its dependencies are organized, you may need some extra steps in order to be able to import it in your projects (see #784 and moby/moby#28269).
+```
+
+So, I guess I can use the official SDK! :)
