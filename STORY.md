@@ -172,4 +172,14 @@ Something like that. I think the arch also depends on the platform, like, Docker
 
 Why is this important? Sometimes users might be writing platform specific code in which case the build and run might fail ! Such platform specific code is very minimal though :) At least in golang. Not sure how platform specific stuff is handled in other languages, but there might be some similar way using just code :)
 
+---
 
+Next steps?
+
+Try writing golang code in a single file
+
+Try running it in a Docker container using Docker CLI
+
+Try running it in a Docker container using OCI tools and CLI
+
+Try running it in a Docker container using OCI using Golang code and libraries
