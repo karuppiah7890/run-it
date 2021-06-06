@@ -133,3 +133,43 @@ New Feature! Idea! Users can fork code from other users
 ---
 
 New Feature! Idea! Users can make their code public or private ;) Public code can be seen by other users through some gallery view maybe? :D
+
+---
+
+New Feature! Idea! Version the user's code? This is a bit much though. We will need some system like Git :P What's the purpose? Can user go back to an older version? How is commit / save time decided? By the user? By the system? Hmm
+
+---
+
+For saving code or mounting code in an environment to run the code, I was wondering how it can be done
+
+For starters, I thought I can do volume mount when using Docker. I was thinking how volume mount works - I just realized that it might be transferring files from the client to the server. Gotta confirm though. Anyways, for now, the code is just one file and we can restrict the code size to avoid resource hogging of the storage resource
+
+Later, we can think about how to store code in something like Docker volume and attach the Docker volume to a container
+
+Similarly, we need to see how to isolate the network(s) of the containers. Gotta ensure it's by default isolated, or else isolate it, so that one container cannot connect to other containers by being in the same network and also accessible :)
+
+For golang, I can use `go run` instead of doing `go build` and then using some binary name. So, it's gonna be
+
+```bash
+$ go run main.go
+```
+
+Instead of
+
+```bash
+$ go build -v -o app
+$ ./app
+```
+
+The user should also be able to understand that the environment is a linux environment and what OS it is / has etc, for example Ubuntu, Arch Linux etc. This has to be provided by the admin when configuring the runtime. For example, it should be like -
+
+Runtime name - Go v1.16.3
+Runtime code - go-v1.16.3
+OS: Ubuntu 20.04
+Arch: amd64
+
+Something like that. I think the arch also depends on the platform, like, Docker engine amd64 can only run amd64 container images I think. Something like that. Gotta confirm those stuff
+
+Why is this important? Sometimes users might be writing platform specific code in which case the build and run might fail ! Such platform specific code is very minimal though :) At least in golang. Not sure how platform specific stuff is handled in other languages, but there might be some similar way using just code :)
+
+
