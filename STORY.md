@@ -318,3 +318,23 @@ When using the official SDK, keep in mind that because of how the its dependenci
 So, I guess I can use the official SDK! :)
 
 https://docs.docker.com/engine/api/sdk/
+
+---
+
+Some more Ideas!! Random ones too :P
+
+For run-it, should I store every run by the user and show it as part of old runs? Where they can see that version of the code and also the run log. In which case all logs need to be stored, hmm. Or there can be a limit. Show last five runs etc. Archive or throw others etc. Hmm. Users cannot edit the code while seeing old run or run that code. That's old code. But they can copy it etc. Hmm. Something like that. As latest code might be different and this would be older version of the code
+
+For resources, maybe admin can allocate max amount of resources for each user. User can then use that max amount of resources for their programs! So, they can run multiple projects simultaneously with some resources for each project :) once a build is raised, the resources used by that build is locked and not usable for other builds until the build is done or stopped and then those resources are available in the user's resource pool. Cool, right? :D but hard too :p keeping track of resources etc
+
+I mentioned stop build. So...what if a build takes a long time? Can the user stop the build? Or when the code is running, can the user stop it in between?
+
+"Building..."
+
+"Running..."
+
+All those notifications / information in the Web UI, not in the console like UI, but in the web UI. And user clicks "stop running" or "stop building"? Well, you stop it. The infrastructure should stop it, remove container, etc :) user may have their own reasons to stop the build and or run, hmm. Especially if user's resources are shared across projects, then they could stop the build or run, to use the resources in another project :) :D
+
+---
+
+
