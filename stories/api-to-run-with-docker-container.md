@@ -54,4 +54,167 @@ Hi there! RequestURI is "/"
 
 :D
 
+---
 
+Next steps:
+- Using an API request invoke a Docker container. Maybe use golang image. Maybe run a echo command, or just `go version` command
+
+---
+
+I need to keep the platform code separately so that I can easily refactor later, using interfaces etc :) I don't want to refactor too soon, but also not keep everything very tightly coupled already if it can be separate simple functions :)
+
+https://docs.docker.com/engine/api/sdk/
+
+```bash
+$ go get -u -v github.com/docker/docker/client
+go: downloading github.com/docker/docker v1.13.1
+go: downloading github.com/docker/docker v20.10.7+incompatible
+go: downloading github.com/docker/go-units v0.4.0
+go: downloading github.com/docker/distribution v2.7.1+incompatible
+go: downloading github.com/docker/go-connections v0.4.0
+go: downloading github.com/gogo/protobuf v1.3.2
+go: downloading github.com/containerd/containerd v1.5.2
+go: downloading github.com/sirupsen/logrus v1.8.1
+go: downloading github.com/opencontainers/image-spec v1.0.1
+go: downloading github.com/opencontainers/go-digest v1.0.0
+go: downloading google.golang.org/grpc v1.38.0
+go: downloading golang.org/x/sys v0.0.0-20210514084401-e8d321eab015
+go: downloading github.com/Microsoft/go-winio v0.4.17
+go: downloading golang.org/x/net v0.0.0-20210510120150-4163338589ed
+go: downloading google.golang.org/genproto v0.0.0-20201110150050-8816d57aaa9a
+go: downloading github.com/golang/protobuf v1.4.3
+go: downloading github.com/golang/protobuf v1.5.2
+go: downloading github.com/Microsoft/go-winio v0.5.0
+go: downloading google.golang.org/protobuf v1.25.0
+go: downloading golang.org/x/sys v0.0.0-20210603125802-9665404d3644
+go: downloading golang.org/x/net v0.0.0-20210525063256-abc453219eb5
+go: downloading google.golang.org/protobuf v1.26.0
+go: downloading google.golang.org/genproto v0.0.0-20210607140030-00d4fb20b1ae
+google.golang.org/protobuf/internal/set
+google.golang.org/protobuf/internal/flags
+github.com/docker/docker/api/types/events
+github.com/docker/docker/api
+golang.org/x/sys/internal/unsafeheader
+github.com/docker/docker/api/types/image
+google.golang.org/protobuf/internal/pragma
+github.com/docker/docker/api/types/versions
+golang.org/x/sys/unix
+google.golang.org/protobuf/internal/detrand
+google.golang.org/grpc/codes
+github.com/pkg/errors
+google.golang.org/protobuf/internal/version
+github.com/opencontainers/go-digest
+github.com/opencontainers/image-spec/specs-go
+google.golang.org/protobuf/internal/errors
+github.com/docker/docker/api/types/blkiodev
+github.com/docker/docker/api/types/mount
+github.com/docker/docker/api/types/strslice
+github.com/docker/go-connections/nat
+github.com/docker/go-units
+github.com/docker/docker/api/types/filters
+google.golang.org/protobuf/encoding/protowire
+github.com/docker/docker/api/types/time
+github.com/gogo/protobuf/proto
+google.golang.org/protobuf/reflect/protoreflect
+golang.org/x/net/internal/socks
+github.com/docker/docker/api/types/container
+github.com/docker/distribution/digestset
+github.com/opencontainers/image-spec/specs-go/v1
+github.com/docker/docker/api/types/network
+github.com/docker/docker/api/types/registry
+github.com/docker/distribution/registry/api/errcode
+golang.org/x/net/proxy
+github.com/docker/go-connections/tlsconfig
+net/http/httputil
+github.com/docker/distribution/reference
+github.com/docker/go-connections/sockets
+google.golang.org/protobuf/internal/encoding/messageset
+google.golang.org/protobuf/internal/strs
+google.golang.org/protobuf/internal/descfmt
+google.golang.org/protobuf/runtime/protoiface
+google.golang.org/protobuf/internal/order
+google.golang.org/protobuf/internal/genid
+google.golang.org/protobuf/internal/encoding/text
+google.golang.org/protobuf/internal/descopts
+google.golang.org/protobuf/reflect/protoregistry
+github.com/sirupsen/logrus
+google.golang.org/protobuf/internal/encoding/defval
+google.golang.org/protobuf/proto
+github.com/containerd/containerd/log
+google.golang.org/protobuf/encoding/prototext
+google.golang.org/protobuf/internal/filedesc
+google.golang.org/protobuf/internal/encoding/tag
+google.golang.org/protobuf/internal/impl
+github.com/docker/docker/api/types/swarm/runtime
+github.com/docker/docker/api/types/swarm
+github.com/docker/docker/api/types
+github.com/docker/docker/api/types/volume
+google.golang.org/protobuf/internal/filetype
+google.golang.org/protobuf/runtime/protoimpl
+google.golang.org/protobuf/types/known/anypb
+google.golang.org/protobuf/types/known/durationpb
+google.golang.org/protobuf/types/known/timestamppb
+google.golang.org/protobuf/types/descriptorpb
+github.com/golang/protobuf/ptypes/duration
+github.com/golang/protobuf/ptypes/timestamp
+github.com/golang/protobuf/ptypes/any
+google.golang.org/protobuf/reflect/protodesc
+github.com/golang/protobuf/proto
+google.golang.org/genproto/googleapis/rpc/status
+github.com/golang/protobuf/ptypes
+google.golang.org/grpc/internal/status
+google.golang.org/grpc/status
+github.com/containerd/containerd/errdefs
+github.com/containerd/containerd/platforms
+github.com/docker/docker/errdefs
+github.com/docker/docker/client
+go get: added github.com/Microsoft/go-winio v0.5.0
+go get: added github.com/containerd/containerd v1.5.2
+go get: added github.com/docker/docker v20.10.7+incompatible
+go get: added github.com/docker/go-connections v0.4.0
+go get: added github.com/sirupsen/logrus v1.8.1
+go get: upgraded golang.org/x/net v0.0.0-20210510120150-4163338589ed => v0.0.0-20210525063256-abc453219eb5
+go get: upgraded golang.org/x/sys v0.0.0-20210514084401-e8d321eab015 => v0.0.0-20210603125802-9665404d3644
+go get: added google.golang.org/genproto v0.0.0-20210607140030-00d4fb20b1ae
+```
+
+https://godoc.org/github.com/docker/docker/client
+
+https://pkg.go.dev/github.com/docker/docker/client?utm_source=godoc
+
+Docker Engine API v1.41 - https://docs.docker.com/engine/api/v1.41/ which is the latest now
+
+Latest URL is also - https://docs.docker.com/engine/api/late
+
+Version history - https://docs.docker.com/engine/api/version-history/
+
+Overview - https://docs.docker.com/engine/api/ , https://docs.docker.com/engine/api/#versioned-api-and-sdk
+
+Examples!! https://docs.docker.com/engine/api/sdk/examples/
+
+I'll start with the quick start - https://docs.docker.com/engine/api/sdk/#sdk-and-api-quickstart
+
+```bash
+$ go run pkg/platforms/docker/docker.go 
+{"status":"Pulling from library/alpine","id":"latest"}
+{"status":"Pulling fs layer","progressDetail":{},"id":"540db60ca938"}
+{"status":"Downloading","progressDetail":{"current":29354,"total":2811969},"progress":"[\u003e                                                  ]  29.35kB/2.812MB","id":"540db60ca938"}
+{"status":"Downloading","progressDetail":{"current":735671,"total":2811969},"progress":"[=============\u003e                                     ]  735.7kB/2.812MB","id":"540db60ca938"}
+{"status":"Downloading","progressDetail":{"current":1649079,"total":2811969},"progress":"[=============================\u003e                     ]  1.649MB/2.812MB","id":"540db60ca938"}
+{"status":"Downloading","progressDetail":{"current":2632119,"total":2811969},"progress":"[==============================================\u003e    ]  2.632MB/2.812MB","id":"540db60ca938"}
+{"status":"Verifying Checksum","progressDetail":{},"id":"540db60ca938"}
+{"status":"Download complete","progressDetail":{},"id":"540db60ca938"}
+{"status":"Extracting","progressDetail":{"current":32768,"total":2811969},"progress":"[\u003e                                                  ]  32.77kB/2.812MB","id":"540db60ca938"}
+{"status":"Extracting","progressDetail":{"current":98304,"total":2811969},"progress":"[=\u003e                                                 ]   98.3kB/2.812MB","id":"540db60ca938"}
+{"status":"Extracting","progressDetail":{"current":1277952,"total":2811969},"progress":"[======================\u003e                            ]  1.278MB/2.812MB","id":"540db60ca938"}
+{"status":"Extracting","progressDetail":{"current":2719744,"total":2811969},"progress":"[================================================\u003e  ]   2.72MB/2.812MB","id":"540db60ca938"}
+{"status":"Extracting","progressDetail":{"current":2811969,"total":2811969},"progress":"[==================================================\u003e]  2.812MB/2.812MB","id":"540db60ca938"}
+{"status":"Pull complete","progressDetail":{},"id":"540db60ca938"}
+{"status":"Digest: sha256:69e70a79f2d41ab5d637de98c1e0b055206ba40a8145e7bddb55ccc04e13cf8f"}
+{"status":"Status: Downloaded newer image for alpine:latest"}
+hello world
+```
+
+That's so cool!! :D
+
+It's interesting to see the code! :)
