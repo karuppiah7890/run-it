@@ -337,4 +337,76 @@ All those notifications / information in the Web UI, not in the console like UI,
 
 ---
 
+Some more ideas!!
 
+Logs - how to design an API to get logs? Will it be like "get all logs for the run"? Or will it be paginated?
+
+For example, if I get the logs like
+
+/logs?n=5
+
+And get only first line of log instead of 5 lines since the container is just getting started, then, I can't send request next to get the next 5, because I haven't got the first five itself. I actually need to send request to get from second one. So, it could be paginated like
+
+/logs?from=1&to=5
+
+And if it gives only one line, it can also return next reference
+
+next=2
+
+Or something like that. Maybe the size can always be same? 🤷‍♂️ Always five lines. Or instead of "to" we can say log size
+
+size=5
+
+And use a default value when it's not provided, like 5 or 10 etc
+
+I was also thinking if I should get full container logs maybe, instead of paginated. But that seemed too much. Too much data. But that's also kind of an easy implementation
+
+It all actually depends on how we can get logs from the platforms too :) gotta see how the platforms provide an API for logs and how the response looks like. For example Docker engine API, Kubernetes API, Nomad API etc
+
+I mean, idk how the response looks like or even the request. One response I can think of is - to differentiate different lines, use an array of strings. Or use "\n" and have one big string as response. I don't know
+
+Also, I gotta check how to show all logs, including blank lines which are tricky. What if a program shows multiple blank lines and then puts some data. I need to show the same in the UI and in the API. I need to be able to differentiate between blank line log vs no log. Maybe "\n" will be the differentiator, like, how we put it, and maybe empty logs like "   " etc where just spaces are there or nothing is there, just empty string, and then new line for next log line
+
+Also, for web UI, instead of polling, I can also think of using server sent events to get logs from the API server. Something to think about
+
+---
+
+I was also thinking about monitoring, logging, instrumentation, error monitoring for the API server itself
+
+For example, for basic monitoring, we can have a Prometheus metrics endpoint and export metrics like platform metrics depending on the platform. Like, how many runs have been done with the platform, how many containers are running currently and stuff like that. Same for other platforms
+
+Metrics for platforms would look like docker_total_runs or something like that. We need the information that it's Docker platform. We can also prefix platform in it, if needed and we can export metrics for all platforms. Anything that's active will show up values while others give 0 values or nil / null values in case they are not being used.
+
+As of now the plan is to use only one platform at a time in an API server. In the future maybe this could be changed. I think this might change :) but I need to decide how the platform will be chosen, if user is abstracted away from that detail, and if only admins know it. Maybe something like, a user can use only a particular platform, or a user can use any of the platforms and API server chooses randomly or based on some mechanism, like availability, success rate etc?
+
+Also, for metrics, if we have metrics, we can also have dashboards using Grafana. Like, a graph showing number of containers run in Docjer in the last few days. And a single counter showing total containers run in Docker. And any metric we can think of ! :)
+
+Come to think of it, this is like trying to run CI/CD tasks or jobs and checking it's logs. I was literally thinking of how Travis CI would show it's long list of logs. Maybe I could check their API response! Same for other CI CD systems like GitHub Actions, GitLab etc. For some I can even find the code as it's Open Source. Like Jenkins, Tekton etc :)
+
+I was thinking about metrics because it's important to know what's going on in the system. And monitoring is key for that
+
+We would also need error monitoring to monitor errors. For example Sentry like systems
+
+I'm talking about this because it's important to understand what's going on in the system when I'm developing and running the system in development mode and in a production environment
+
+Ideally it shouldn't be too hard to debug in development mode. Maybe I can log a ton of things during development by keeping log level as too high. I'm just wondering if there are better ways to understand what's going on in the system, hmm
+
+---
+
+Also, I thought about the UI, for now I think building, running, it's all the same? Atleast for Golang, maybe for Java we have to build with Java compiler (JDK), and then run with JRE. Even with Golang that can be done, compilation and then running, but I'm going with a simple method for now
+
+So, for now, I'm just gonna be showing as "running"
+
+And the UI will have two buttons - play for run, and a square for stopping. Play will be in green. Stop will be in red. I can also put text in the buttons and on hover and anywhere needed so that it's accessible :) color blind people, people with other eye disabilities would be able to use the text and things like aria labels to understand what the buttons do! :)
+
+---
+
+Though I have so much ideas, for UI etc, I wanna start with the API and keep the API clean and very good in terms of design :)
+
+And then there's UI, monitoring, logging etc
+
+I might do some dirty logging for now, a lot of it maybe, for development purposes
+
+---
+
+I'm going to start off by creating an API to run some golang code with Docker container! :) The story is [here](./stories/api-to-run-with-docker-container.md)
