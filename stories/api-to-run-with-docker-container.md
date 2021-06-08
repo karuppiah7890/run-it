@@ -218,3 +218,25 @@ hello world
 That's so cool!! :D
 
 It's interesting to see the code! :)
+
+Looking at the code for running Docker container, it's interesting!
+
+I always use docker run, as it's easy to run a container like that
+
+I do remember seeing create and start commands, not to mention stop, rm (remove) etc. I actually never stopped containers later. At some point I always started to force remove containers which stopped and removed even running containers, instead of giving errors that running containers cannot be removed etc
+
+In the code, we clearly are doing the following steps -
+
+We ensure that the container image is present in the Docker Engine by pulling the image
+
+We create a container
+
+We then start the container
+
+We wait for the container to stop
+
+We get the container logs
+
+We actually also get logs for the pull ! :)
+
+So, run is basically - create a container and then start it

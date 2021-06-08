@@ -410,3 +410,13 @@ I might do some dirty logging for now, a lot of it maybe, for development purpos
 ---
 
 I'm going to start off by creating an API to run some golang code with Docker container! :) The story is [here](./stories/api-to-run-with-docker-container.md)
+
+---
+
+Ideas for running in Kubernetes
+
+For running code in Kubernetes, I could use Jobs, or I could use pods directly too. If I use pods directly, there will not be any retry if it fails, if I set some options especially. Since it's more of a task or process taht runs to completion. Or else Kubernetes might think it died and might restart it etc. I gotta ensure it is in a normal and expected state, avoiding multiple runs etc
+
+Jobs can help in case of failures and retries or even parallelism etc, but that's not necessary here 🤷‍♂️
+
+I also don't need complicated stuff like deployment. I'm not really deploying a service or anything. No updates, no multiple instances etc. So, just pod is good I think
