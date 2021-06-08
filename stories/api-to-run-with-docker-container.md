@@ -299,3 +299,273 @@ c7fb911a6520   alpine    "echo 'hello world'"   4 seconds ago   Exited (0) 3 sec
 ```
 
 Cool right? :D
+
+---
+
+I'm gonna be using in-memory workers now with channels
+
+https://gobyexample.com/channels
+
+https://gobyexample.com/channel-buffering
+
+---
+
+Interesting! After using channels, I see this -
+
+```bash
+$ go run server.go 
+# command-line-arguments
+./server.go:12:5: undefined: worker
+
+$ go build -v
+
+$ ./api 
+```
+
+```bash
+$ time curl localhost:8080
+Started container!
+real	0m0.014s
+user	0m0.004s
+sys	0m0.006s
+
+$ time curl localhost:8080
+Started container!
+real	0m0.010s
+user	0m0.004s
+sys	0m0.005s
+
+$ time curl localhost:8080
+Started container!
+real	0m0.011s
+user	0m0.004s
+sys	0m0.006s
+
+$ time curl localhost:8080
+Started container!
+real	0m1.372s
+user	0m0.004s
+sys	0m0.005s
+
+$ time curl localhost:8080
+Started container!
+real	0m2.295s
+user	0m0.004s
+sys	0m0.006s
+
+$ time curl localhost:8080
+Started container!
+real	0m2.481s
+user	0m0.004s
+sys	0m0.006s
+
+$ docker ps -a
+CONTAINER ID   IMAGE     COMMAND                CREATED          STATUS                      PORTS     NAMES
+b1de43d1f99a   alpine    "echo 'hello world'"   3 seconds ago    Exited (0) 3 seconds ago              admiring_herschel
+4271b55de801   alpine    "echo 'hello world'"   7 seconds ago    Exited (0) 7 seconds ago              mystifying_ardinghelli
+04d588701233   alpine    "echo 'hello world'"   11 seconds ago   Exited (0) 11 seconds ago             epic_hopper
+c7fb911a6520   alpine    "echo 'hello world'"   10 minutes ago   Exited (0) 10 minutes ago             heuristic_sinoussi
+```
+
+```bash
+$ time curl localhost:8080
+Started container!
+real	0m0.012s
+user	0m0.004s
+sys	0m0.006s
+
+$ time curl localhost:8080
+Started container!
+real	0m0.011s
+user	0m0.004s
+sys	0m0.005s
+
+$ time curl localhost:8080
+Started container!
+real	0m0.010s
+user	0m0.004s
+sys	0m0.006s
+
+$ time curl localhost:8080
+Started container!
+real	0m0.010s
+user	0m0.004s
+sys	0m0.005s
+
+$ time curl localhost:8080
+Started container!
+real	0m1.671s
+user	0m0.004s
+sys	0m0.006s
+```
+
+For few requests it's too fast. For some it's slow. Why? I think it's because I kept the channel buffer size small ;) I was just seeing if a buffer size of 2 works and how it looks like
+
+I'll probably increase it to 1000 for now :)
+
+Yup! it's all good now! :)
+
+```bash
+$ time curl localhost:8080
+Started container!
+real	0m0.012s
+user	0m0.004s
+sys	0m0.006s
+
+$ go build -v
+
+$ time curl localhost:8080
+Started container!
+real	0m0.009s
+user	0m0.003s
+sys	0m0.004s
+
+$ time curl localhost:8080
+Started container!
+real	0m0.011s
+user	0m0.004s
+sys	0m0.006s
+
+$ time curl localhost:8080
+Started container!
+real	0m0.009s
+user	0m0.004s
+sys	0m0.005s
+
+$ time curl localhost:8080
+Started container!
+real	0m0.010s
+user	0m0.004s
+sys	0m0.005s
+
+$ time curl localhost:8080
+Started container!
+real	0m0.010s
+user	0m0.004s
+sys	0m0.005s
+
+$ time curl localhost:8080
+Started container!
+real	0m0.010s
+user	0m0.004s
+sys	0m0.005s
+
+$ docker ps -a
+CONTAINER ID   IMAGE     COMMAND                CREATED              STATUS                              PORTS     NAMES
+24280f96b963   alpine    "echo 'hello world'"   1 second ago         Exited (0) Less than a second ago             lucid_diffie
+bdce6e01b0dc   alpine    "echo 'hello world'"   5 seconds ago        Exited (0) 4 seconds ago                      quirky_colden
+8d759814db07   alpine    "echo 'hello world'"   9 seconds ago        Exited (0) 8 seconds ago                      eager_kowalevski
+3dfa32502bbf   alpine    "echo 'hello world'"   About a minute ago   Exited (0) About a minute ago                 stoic_shtern
+b22c5c0f23d4   alpine    "echo 'hello world'"   About a minute ago   Exited (0) About a minute ago                 nervous_euclid
+959daf9e810d   alpine    "echo 'hello world'"   About a minute ago   Exited (0) About a minute ago                 kind_wilson
+f4648f15173a   alpine    "echo 'hello world'"   About a minute ago   Exited (0) About a minute ago                 compassionate_mahavira
+c8e5d03934d1   alpine    "echo 'hello world'"   2 minutes ago        Exited (0) 2 minutes ago                      determined_chebyshev
+21cbe3825145   alpine    "echo 'hello world'"   2 minutes ago        Exited (0) 2 minutes ago                      interesting_feynman
+310499bed792   alpine    "echo 'hello world'"   2 minutes ago        Exited (0) 2 minutes ago                      interesting_neumann
+1b32ddc61509   alpine    "echo 'hello world'"   2 minutes ago        Exited (0) 2 minutes ago                      heuristic_jones
+b1de43d1f99a   alpine    "echo 'hello world'"   2 minutes ago        Exited (0) 2 minutes ago                      admiring_herschel
+4271b55de801   alpine    "echo 'hello world'"   2 minutes ago        Exited (0) 2 minutes ago                      mystifying_ardinghelli
+04d588701233   alpine    "echo 'hello world'"   3 minutes ago        Exited (0) 3 minutes ago                      epic_hopper
+c7fb911a6520   alpine    "echo 'hello world'"   13 minutes ago       Exited (0) 13 minutes ago                     heuristic_sinoussi
+
+```
+
+It's working really well :)
+
+```bash
+
+$ time curl localhost:8080
+Started container!
+real	0m0.011s
+user	0m0.004s
+sys	0m0.006s
+
+$ time curl localhost:8080
+Started container!
+real	0m0.011s
+user	0m0.004s
+sys	0m0.005s
+
+$ time curl localhost:8080
+Started container!
+real	0m0.009s
+user	0m0.004s
+sys	0m0.005s
+
+$ docker ps -a
+CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
+
+$ docker ps -a
+CONTAINER ID   IMAGE     COMMAND                CREATED                  STATUS                  PORTS     NAMES
+4724112e7106   alpine    "echo 'hello world'"   Less than a second ago   Up Less than a second             peaceful_clarke
+
+$ docker ps -a
+CONTAINER ID   IMAGE     COMMAND                CREATED        STATUS                    PORTS     NAMES
+4724112e7106   alpine    "echo 'hello world'"   1 second ago   Exited (0) 1 second ago             peaceful_clarke
+
+$ docker ps -a
+CONTAINER ID   IMAGE     COMMAND                CREATED         STATUS                    PORTS     NAMES
+4724112e7106   alpine    "echo 'hello world'"   2 seconds ago   Exited (0) 1 second ago             peaceful_clarke
+
+$ docker ps -a
+CONTAINER ID   IMAGE     COMMAND                CREATED         STATUS                     PORTS     NAMES
+4724112e7106   alpine    "echo 'hello world'"   3 seconds ago   Exited (0) 2 seconds ago             peaceful_clarke
+
+$ docker ps -a
+CONTAINER ID   IMAGE     COMMAND                CREATED         STATUS                     PORTS     NAMES
+4724112e7106   alpine    "echo 'hello world'"   3 seconds ago   Exited (0) 3 seconds ago             peaceful_clarke
+
+$ docker ps -a
+CONTAINER ID   IMAGE     COMMAND                CREATED         STATUS                              PORTS     NAMES
+6520538fdbdf   alpine    "echo 'hello world'"   1 second ago    Exited (0) Less than a second ago             serene_haslett
+4724112e7106   alpine    "echo 'hello world'"   4 seconds ago   Exited (0) 4 seconds ago                      peaceful_clarke
+
+$ docker ps -a
+CONTAINER ID   IMAGE     COMMAND                CREATED         STATUS                     PORTS     NAMES
+6520538fdbdf   alpine    "echo 'hello world'"   2 seconds ago   Exited (0) 1 second ago              serene_haslett
+4724112e7106   alpine    "echo 'hello world'"   5 seconds ago   Exited (0) 5 seconds ago             peaceful_clarke
+
+$ docker ps -a
+CONTAINER ID   IMAGE     COMMAND                CREATED         STATUS                     PORTS     NAMES
+6520538fdbdf   alpine    "echo 'hello world'"   3 seconds ago   Exited (0) 2 seconds ago             serene_haslett
+4724112e7106   alpine    "echo 'hello world'"   6 seconds ago   Exited (0) 6 seconds ago             peaceful_clarke
+
+$ docker ps -a
+CONTAINER ID   IMAGE     COMMAND                CREATED         STATUS                     PORTS     NAMES
+6520538fdbdf   alpine    "echo 'hello world'"   4 seconds ago   Exited (0) 3 seconds ago             serene_haslett
+4724112e7106   alpine    "echo 'hello world'"   7 seconds ago   Exited (0) 6 seconds ago             peaceful_clarke
+
+$ docker ps -a
+CONTAINER ID   IMAGE     COMMAND                CREATED                  STATUS                     PORTS     NAMES
+c06317e5bbc2   alpine    "echo 'hello world'"   Less than a second ago   Created                              nice_chandrasekhar
+6520538fdbdf   alpine    "echo 'hello world'"   5 seconds ago            Exited (0) 3 seconds ago             serene_haslett
+4724112e7106   alpine    "echo 'hello world'"   8 seconds ago            Exited (0) 7 seconds ago             peaceful_clarke
+```
+
+It takes very few moments to send back a response, so that's good! :)
+
+```bash
+$ time curl -i localhost:8080
+HTTP/1.1 200 OK
+Server: fasthttp
+Date: Tue, 08 Jun 2021 04:25:09 GMT
+Content-Type: text/plain; charset=utf-8
+Content-Length: 18
+
+Started container!
+real	0m0.010s
+user	0m0.004s
+sys	0m0.005s
+```
+
+I just remove containers like this -
+
+```bash
+$ docker ps -a -q | xargs docker rm
+d5e80cf653a0
+c06317e5bbc2
+6520538fdbdf
+4724112e7106
+``
+
+
