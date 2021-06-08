@@ -256,4 +256,46 @@ Also, there could be more than one worker. If one worker picks up a job, it shou
 
 For now, I plan to have an in-memory job queue using channels maybe and an in-memory worker module as part of the api server binary :)
 
+---
 
+I didn't implement any worker as of now, and the API call looks like this -
+
+```bash
+$ go run server.go
+```
+
+```bash
+$ curl localhost:8080
+Started container
+```
+
+```
+$ docker ps -a
+CONTAINER ID   IMAGE                                     COMMAND                  CREATED         STATUS                     PORTS     NAMES
+32aa06a168c1   alpine                                    "echo 'hello world'"     4 seconds ago   Exited (0) 3 seconds ago             admiring_kilby
+842d0a03626b   alpine                                    "echo 'hello world'"     2 hours ago     Exited (0) 2 hours ago               agitated_darwin
+```
+
+```bash
+$ time curl localhost:8080
+Started container!
+real	0m4.135s
+user	0m0.004s
+sys	0m0.005s
+```
+
+That's a total of 4 seconds!! Wow! Hmm
+
+```bash
+$ time curl localhost:8080
+Started container!
+real	0m4.095s
+user	0m0.004s
+sys	0m0.006s
+
+$ docker ps -a
+CONTAINER ID   IMAGE     COMMAND                CREATED         STATUS                     PORTS     NAMES
+c7fb911a6520   alpine    "echo 'hello world'"   4 seconds ago   Exited (0) 3 seconds ago             heuristic_sinoussi
+```
+
+Cool right? :D
