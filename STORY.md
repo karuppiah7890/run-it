@@ -420,3 +420,93 @@ For running code in Kubernetes, I could use Jobs, or I could use pods directly t
 Jobs can help in case of failures and retries or even parallelism etc, but that's not necessary here 🤷‍♂️
 
 I also don't need complicated stuff like deployment. I'm not really deploying a service or anything. No updates, no multiple instances etc. So, just pod is good I think
+
+---
+
+Ideas for Docker container timeout or max time, probably in the future
+
+```bash
+$ docker run --help | rg time
+      --cpu-rt-period int              Limit CPU real-time period in microseconds
+      --cpu-rt-runtime int             Limit CPU real-time runtime in microseconds
+      --health-timeout duration        Maximum time to allow one check to run (ms|s|m|h) (default 0s)
+      --runtime string                 Runtime to use for this container
+      --stop-timeout int               Timeout (in seconds) to stop a container
+
+$ docker run --help | rg stop
+      --stop-signal string             Signal to stop a container (default "SIGTERM")
+      --stop-timeout int               Timeout (in seconds) to stop a container
+```
+
+But the timeout didn't work ! :/ I'm not sure why
+
+```bash
+$ time docker run --rm --stop-timeout 5  golang:1.16.5 sleep 20
+
+real	0m20.742s
+user	0m0.142s
+sys	0m0.117s
+
+$ docker run --help | less
+
+$ sleep 20
+
+$ sleep 50
+Terminated: 15
+
+$ kill --help
+
+$ docker run --help | less
+
+$ time docker run --rm --stop-timeout aa golang:1.16.5 sleep 20
+invalid argument "aa" for "--stop-timeout" flag: strconv.ParseInt: parsing "aa": invalid syntax
+See 'docker run --help'.
+
+real	0m1.035s
+user	0m0.216s
+sys	0m0.398s
+$ time docker run --rm --stop-timeout 1 golang:1.16.5 sleep 20
+
+real	0m20.749s
+user	0m0.145s
+sys	0m0.122s
+
+$ time docker run --rm --stop-timeout 1 --stop-signal SIGKILL golang:1.16.5 sleep 20
+
+real	0m20.719s
+user	0m0.144s
+sys	0m0.114s
+
+$ time docker run --rm --stop-timeout 1 --stop-signal KILL golang:1.16.5 sleep 20
+^C
+real	0m20.745s
+user	0m0.145s
+sys	0m0.115s
+```
+
+https://duckduckgo.com/?t=ffab&q=docker+stop+timeout&ia=web
+
+https://stackoverflow.com/questions/48299352/how-to-limit-docker-run-execution-time#48299490
+
+```bash
+$ time docker run --rm --stop-timeout 1 --stop-signal KILL golang:1.16.5 bash -c '(while true; do true; done)'
+^C
+real	0m16.205s
+user	0m0.144s
+sys	0m0.118s
+$ time docker run --rm --stop-timeout 1 --stop-signal SIGKILL golang:1.16.5 bash -c '(while true; do true; done)'
+
+real	0m12.907s
+user	0m0.144s
+sys	0m0.072s
+```
+
+Interesting, there's an issue for it in Docker core which is moby
+
+https://github.com/moby/moby/issues/1905
+
+https://stackoverflow.com/questions/28933925/docker-timeout-for-container
+
+I think the best way is to simply have a timer in the API server / core module, which will call stop on the platform's resources - containers in the case of Docker platform, pods or something like that in Kubernetes platform and so on
+
+Anyways, this is an interesting thing, hmm

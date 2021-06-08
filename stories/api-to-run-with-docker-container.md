@@ -240,3 +240,20 @@ We get the container logs
 We actually also get logs for the pull ! :)
 
 So, run is basically - create a container and then start it
+
+Now, for the API - I can't keep the client waiting for a long time till the API server talks to Docker engine, pulls images, create a container, start it, and get logs etc
+
+The API is to run a container. It can be an asynchronous operation - so, we can let the API server send back the response immediately after it captures the operation - "run a container"
+
+I think we will have to think about server, worker model. As it doesn't make sense for the server to take care of talking to the platform too and doing asynchronous tasks. But anyways, for now I'll let the server codebase itself do it, and see how it can be better managed with a separate worker process, running as a separate binary and maybe even in a different machine, to enable a distributed system. We might need some queues for such stuff
+
+
+Server -> Job Queue -> Worker
+
+Worker would listen and look for Jobs in the Job Queue and pick up the Job if one is present. We would also need to understand how to provide the Job status - container run failed etc. Probably more of a futuristic thing. Anyways. For now, every operation can be a separate job - run container, get status, get logs etc
+
+Also, there could be more than one worker. If one worker picks up a job, it should not be picked up by another. If a worker fails to run a job due to some worker issue, then another worker can pick it up and run again. But those are some extreme cases
+
+For now, I plan to have an in-memory job queue using channels maybe and an in-memory worker module as part of the api server binary :)
+
+
